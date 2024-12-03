@@ -1,8 +1,11 @@
-import app from './app';
+import "tsconfig-paths/register";
+import app from "./app";
+// import connectToDatabase from "./models/db";
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT as string;
 app.listen(port, () => {
+  // connectToDatabase();
   /* eslint-disable no-console */
-  console.log(`Listening: http://localhost:${port}`);
+  console.log(`Server started on port: ${port}`);
   /* eslint-enable no-console */
 });

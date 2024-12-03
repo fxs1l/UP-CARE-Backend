@@ -1,18 +1,30 @@
 {
-  "compilerOptions": {
-    "outDir": "dist",
-    "sourceMap": true,
-    "target": "esnext",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "strict": true,
-    "skipLibCheck": true
-  },
-  "include": [
-    "./*.js",
-    "src/**/*.ts",
-    "test/**/*.ts",
-  ],
+    "compilerOptions": {
+        "baseUrl": "./",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "outDir": "dist",
+        "paths": {
+            "@/*": ["./*"],
+            "@/api/*": ["./src/api/*"],
+            "@/api": ["./src/api"],
+            "@/api/controllers/*": ["./src/api/controllers/*"],
+            "@/api/middlewares/*": ["./src/api/middlewares/*"],
+            "@/api/models/*": ["./src/api/models/*"],
+            "@/api/routes/*": ["./src/api/routes/*"],
+            "@/api/services/*": ["./src/api/services/*"],
+            "@/constants/*": ["./src/constants/*"],
+            "@/types/*": ["./src/interfaces/*", "./src/types/*"],
+            "@/src/*": ["./src/*"],
+            "@/test/*": ["./test/*"],
+            "@/utils/*": ["./src/utils/*"]
+        },
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "target": "esnext"
+    },
+    "include": ["./*.js", "src/**/*.ts", "test/**/*.ts"]
 }

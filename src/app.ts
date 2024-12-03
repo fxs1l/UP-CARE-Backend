@@ -1,30 +1,40 @@
-import express from 'express';
-import morgan from 'morgan';
-import helmet from 'helmet';
-import cors from 'cors';
+import express from "express";
+import morgan from "morgan";
+import helmet from "helmet";
+import cors from "cors";
 
-import * as middlewares from './middlewares';
-import api from './api';
-import MessageResponse from './interfaces/MessageResponse';
+import MessageResponse from "@/types/MessageResponse";
+import { apiBaseUrl } from "@/constants/url";
 
-require('dotenv').config();
+import { notFound, errorHandler } from "@/api/middlewares/errorMiddleware";
+import nodeRoutes from "@/api/routes/nodeRoutes";
+import sensorRoutes from "@/api/routes/sensorRoutes";
+import sensorDataRoutes from "@/api/routes/sensorDataRoutes";
+
+
+require("dotenv").config();
 
 const app = express();
 
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.get<{}, MessageResponse>('/', (req, res) => {
+
+// Routes
+app.get<{}, MessageResponse>("/", (req, res) => {
   res.json({
-    message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
+    message: "Welcome to UP CARE Platform API",
+    // TODO: write documentation for the API
   });
 });
+app.use(apiBaseUrl, nodeRoutes);
+app.use(apiBaseUrl, sensorRoutes);
+app.use(apiBaseUrl, sensorDataRoutes);
 
-app.use('/api/v1', api);
-
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
+// Middlewares
+app.use(notFound);
+app.use(errorHandler);
 
 export default app;
