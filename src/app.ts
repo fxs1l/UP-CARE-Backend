@@ -1,40 +1,81 @@
-import express from "express";
-import morgan from "morgan";
-import helmet from "helmet";
-import cors from "cors";
+import * as coap from "coap";
+import {
+  createSensor,
+  deleteSensor,
+  getSensorById,
+  getSensors,
+  getSensorsByNodeId,
+  updateSensor,
+} from "@/api/controllers/sensorController";
+import { apiBaseUrl, sensorEndpoint } from "@/constants/url";
+import {
+  createSensorData,
+  deleteSensorData,
+  getAllSensorData,
+  getDataBySensorId,
+  getLatestDataBySensorId,
+  getLatestSensorData,
+  updateSensorData,
+} from "@/api/controllers/sensorDataController";
+import { sensorDataEndpoint } from "@/constants/url";
 
-import MessageResponse from "@/types/MessageResponse";
-import { apiBaseUrl } from "@/constants/url";
+const server = coap.createServer();
 
-import { notFound, errorHandler } from "@/api/middlewares/errorMiddleware";
-import nodeRoutes from "@/api/routes/nodeRoutes";
-import sensorRoutes from "@/api/routes/sensorRoutes";
-import sensorDataRoutes from "@/api/routes/sensorDataRoutes";
+// Define the sensor endpoint
 
 
-require("dotenv").config();
+// CoAP handlers
+server.on("request", (req, res) => {
+  const { method, url } = req;
+  console.log(`Received ${method} request on ${url}`);
+  console.log(url === apiBaseUrl + sensorDataEndpoint);
+  if (url === apiBaseUrl + sensorEndpoint) {
+    // Route: POST /sensors
+    if (method === "POST" && url === sensorEndpoint) {
+      return createSensor(req, res);
+    }
 
-const app = express();
+    // Route: GET /sensors
+    if (method === "GET" && url === sensorEndpoint) {
+      return getSensors(req, res);
+    }
 
-app.use(morgan("dev"));
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
+    // Route: GET /sensors/:id
+    if (method === "GET" && url.startsWith(`${sensorEndpoint}/`)) {
+      const id = url.split("/")[2];
+      return getSensorById(req, res);
+    }
+
+    // Route: GET /sensors/node/:nodeId
+    if (method === "GET" && url.startsWith(`${sensorEndpoint}/node/`)) {
+      const nodeId = url.split("/")[3];
+      return getSensorsByNodeId(req, res);
+    }
+
+    // Route: PUT or PATCH /sensors/:id
+    if ((method === "PUT" || method === "PATCH") && url.startsWith(`${sensorEndpoint}/`)) {
+      const id = url.split("/")[2];
+      return updateSensor(req, res);
+    }
+
+    // Route: DELETE /sensors/:id
+    if (method === "DELETE" && url.startsWith(`${sensorEndpoint}/`)) {
+      const id = url.split("/")[2];
+      return deleteSensor(req, res);
+    }
+  } else if (url === apiBaseUrl + sensorDataEndpoint) {
+    // Route: POST /sensor-data
+    if (method === "POST") {
+      return createSensorData(req, res);
+    }
+  }
 
 
-// Routes
-app.get<{}, MessageResponse>("/", (req, res) => {
-  res.json({
-    message: "Welcome to UP CARE Platform API",
-    // TODO: write documentation for the API
-  });
+  // Default: Resource not found
+  res.code = "4.04"; // Not Found
+  res.end("Not Found");
 });
-app.use(apiBaseUrl, nodeRoutes);
-app.use(apiBaseUrl, sensorRoutes);
-app.use(apiBaseUrl, sensorDataRoutes);
 
-// Middlewares
-app.use(notFound);
-app.use(errorHandler);
 
-export default app;
+
+export default server;
