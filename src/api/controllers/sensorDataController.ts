@@ -3,18 +3,21 @@ import sensorModel from "@/api/models/sensorModel";
 
 export const createSensorData = async (req: any, res: any) => {
   try {
+	console.log(req.payload.toString(), req.payload);
     const body = JSON.parse(req.payload.toString());
     const { sensorId } = body;
-    const sensor = await sensorModel.findById(sensorId);
-    if (!sensor) {
-      console.log("Sensor not found");
-      res.code = "4.04";
-      res.end("Sensor not found");
+    //const sensor = await sensorModel.findById(sensorId);
+    //if (!sensor) {
+      //console.log("Sensor not found");
+      //res.code = "4.04";
+      //res.end("Sensor not found");
 
-      return;
-    }
-    const sensorData = await sensorDataModel.create(body);
-    await sensorData.save();
+      //return;
+    //}
+    console.log("Sensor data received: ", body);
+    //const sensorData = await sensorDataModel.create(body);
+    //await sensorData.save();
+    //console.log("Data saved in DB");
     res.code = "2.01";
     res.end("Created");
 
@@ -27,6 +30,10 @@ export const createSensorData = async (req: any, res: any) => {
 export const getAllSensorData = async (req: any, res: any) => {
   try {
     const sensorData = await sensorDataModel.find();
+    //await setTimeout(() => {
+  //  console.log("A very long operation just finished");
+//}, 5000);
+    //console.log("Here is all the data!");
     res.code = "2.00";
     res.end(JSON.stringify(sensorData));
   } catch (error: any) {

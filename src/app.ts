@@ -28,7 +28,7 @@ const server = coap.createServer();
 server.on("request", (req, res) => {
   const { method, url } = req;
   console.log(`Received ${method} request on ${url}`);
-  console.log(url === apiBaseUrl + sensorDataEndpoint);
+  //console.log(url === "/" + apiBaseUrl + sensorDataEndpoint);
   if (url === apiBaseUrl + sensorEndpoint) {
     // Route: POST /sensors
     if (method === "POST" && url === sensorEndpoint) {
@@ -63,10 +63,14 @@ server.on("request", (req, res) => {
       const id = url.split("/")[2];
       return deleteSensor(req, res);
     }
-  } else if (url === apiBaseUrl + sensorDataEndpoint) {
+  } else if (url === "/" + apiBaseUrl + sensorDataEndpoint || apiBaseUrl + sensorDataEndpoint) {
     // Route: POST /sensor-data
     if (method === "POST") {
+	console.log("Processing POST request");
       return createSensorData(req, res);
+    } else if (method === "GET") {
+    	console.log("Processing GET request");
+	return getAllSensorData(req, res);
     }
   }
 
