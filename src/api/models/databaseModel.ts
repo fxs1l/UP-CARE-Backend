@@ -1,28 +1,27 @@
-import mongoose from "mongoose";
+/* eslint-disable @typescript-eslint/naming-convention */
 require("dotenv").config();
 
-const mongoURI = process.env.MONGO_URI as string;
-const platformURL = mongoURI + "platformDB";
-const sensorDataURL = mongoURI + "sensorDataDB";
+import { InfluxDB, Point } from "@influxdata/influxdb-client";
+import { Agent } from "http";
 
-const databaseOptions: mongoose.ConnectOptions = {
-  retryWrites: true,
-  w: "majority",
-  appName: "Traffic-Intersection",
-};
+import { influxUrl, influxOrg, influxBucket, influxToken } from "@/constants/influxdb";
 
-const platformDb = mongoose.createConnection(platformURL, databaseOptions);
-const sensorDataDb = mongoose.createConnection(sensorDataURL, databaseOptions);
 
-// const connectToDatabase = async () => {
-//   try {
-//     await mongoose.connect(mongoURI);
-//     console.log("Connected to default MongoDB instance");
-//   } catch (error) {
-//     console.error("Error connecting to default MongoDB instance: ", error);
-//   }
-// };
+const keepAliveAgent = new Agent({
+  keepAlive: true, // reuse existing connections
+  keepAliveMsecs: 20 * 1000, // 20 seconds keep alive
+});
+process.on("exit", () => keepAliveAgent.destroy());
 
-// export default connectToDatabase;
 
-export { platformDb, sensorDataDb };
+const influxDB = new InfluxDB(
+  {
+    url: influxUrl,
+    token: influxToken,
+    transportOptions: { agent: keepAliveAgent },
+  });
+
+const writeApi = influxDB.getWriteApi(influxOrg, influxBucket);
+const queryApi = influxDB.getQueryApi(influxOrg);
+
+export { writeApi, queryApi, Point };

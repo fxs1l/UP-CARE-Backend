@@ -1,41 +1,28 @@
-import sensorDataModel from "@/api/models/sensorDataModel";
-import sensorModel from "@/api/models/sensorModel";
+import { writeSensorData, queryData } from "@/api/models/sensorDataModel";
+import log from "@/utils/logging";
+import Payload from "@/types/Payload";
 
 export const createSensorData = async (req: any, res: any) => {
   try {
-	console.log(req.payload.toString(), req.payload);
-    const body = JSON.parse(req.payload.toString());
-    const { sensorId } = body;
-    //const sensor = await sensorModel.findById(sensorId);
-    //if (!sensor) {
-      //console.log("Sensor not found");
-      //res.code = "4.04";
-      //res.end("Sensor not found");
+    const body = JSON.parse(req.payload.toString()) as Payload;
+    log.info(`Sensor data received: \n${JSON.stringify(body)}`);
 
-      //return;
-    //}
-    console.log("Sensor data received: ", body);
-    //const sensorData = await sensorDataModel.create(body);
-    //await sensorData.save();
-    //console.log("Data saved in DB");
+    await writeSensorData(body);
+    log.success("Data point saved successfully!");
     res.code = "2.01";
-    res.end("Created");
+    res.end("Data saved successfully");
+
 
   } catch (error: any) {
     res.code = "5.00";
+    log.error(`Error saving data: ${error.message}`);
     res.end(error.message);
   }
 };
 
 export const getAllSensorData = async (req: any, res: any) => {
   try {
-    const sensorData = await sensorDataModel.find();
-    //await setTimeout(() => {
-  //  console.log("A very long operation just finished");
-//}, 5000);
-    //console.log("Here is all the data!");
-    res.code = "2.00";
-    res.end(JSON.stringify(sensorData));
+    res.end(JSON.stringify(req.body));
   } catch (error: any) {
     res.code = "5.00";
     res.end({ message: error.message });
@@ -44,9 +31,8 @@ export const getAllSensorData = async (req: any, res: any) => {
 
 export const getLatestSensorData = async (req: any, res: any) => {
   try {
-    const sensorData = await sensorDataModel.findOne().sort({ timestamp: -1 });
     res.code = "2.00";
-    res.end(JSON.stringify(sensorData));
+    res.end(JSON.stringify(req.body));
   } catch (error: any) {
     res.code = "5.00";
     res.end({ message: error.message });
@@ -56,15 +42,7 @@ export const getLatestSensorData = async (req: any, res: any) => {
 export const getDataBySensorId = async (req: any, res: any) => {
   try {
     const { sensorId } = req.params;
-    const sensor = await sensorModel.findById(sensorId);
-    if (!sensor) {
-      res.code = "4.04";
-      res.end({ message: "Sensor not found" });
-      return;
-    }
-    const sensorData = await sensorDataModel.find({ sensorId }).sort({ timestamp: -1 });
-    res.code = "2.00";
-    res.end({ sensorData });
+    res.end(req.body);
 
   } catch (error: any) {
     res.code = "5.00";
@@ -75,15 +53,7 @@ export const getDataBySensorId = async (req: any, res: any) => {
 export const getLatestDataBySensorId = async (req: any, res: any) => {
   try {
     const { sensorId } = req.params;
-    const sensor = await sensorModel.findById(sensorId);
-    if (!sensor) {
-      res.code = "4.04";
-      res.end({ message: "Sensor not found" });
-      return;
-    }
-    const sensorData = await sensorDataModel.findOne({ sensorId }).sort({ timestamp: -1 });
-    res.code = "2.00";
-    res.end(sensorData);
+    res.end(req.body);
   } catch (error: any) {
     res.code = "5.00";
     res.end({ message: error.message });
@@ -93,15 +63,8 @@ export const getLatestDataBySensorId = async (req: any, res: any) => {
 export const updateSensorData = async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    const sensorData = await sensorDataModel.findByIdAndUpdate({ _id: id }, req.body, { new: true });
-    if (!sensorData) {
-      res.code = "4.04";
-      res.end({ message: "Sensor data instance not found" });
-      return;
-    }
-    await sensorData.save();
     res.code = "2.00";
-    res.end(sensorData);
+    res.end(req.body);
   } catch (error: any) {
     res.code = "5.00";
     res.end({ message: error.message });
@@ -111,14 +74,7 @@ export const updateSensorData = async (req: any, res: any) => {
 export const deleteSensorData = async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    const sensorData = await sensorDataModel.findByIdAndDelete(id);
-    if (!sensorData) {
-      res.code = "4.04";
-      res.end({ message: "Sensor data instance not found" });
-      return;
-    }
-    res.code = "2.00";
-    res.end({ sensorData, message: "Sensor data instance deleted" });
+    res.end(req.body);
   } catch (error: any) {
     res.code = "5.00";
     res.end({ message: error.message });

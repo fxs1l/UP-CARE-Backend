@@ -1,23 +1,26 @@
 const coap = require("coap"); // Import CoAP library
 
-// Function to send a GET request
-function sendGetRequest() {
-    const req = coap.request("coap://localhost:5683/data");
+// // Function to send a GET request
+// function sendGetRequest() {
+//     const req = coap.request("coap://localhost:5683/data");
 
-    req.on("response", (res) => {
-        console.log("GET Response Code:", res.code);
-        console.log("GET Response:", res.payload.toString());
-        // res.close();
-        res.pipe(process.stdout);
-    });
+//     req.on("response", (res) => {
+//         console.log("GET Response Code:", res.code);
+//         console.log("GET Response:", res.payload.toString());
+//         // res.close();
+//         res.pipe(process.stdout);
+//     });
 
-    req.end(); // Send the request
-}
+//     req.end(); // Send the request
+// }
 const sampleData = {
-    sensorId: "674f260393507ffc05874761",
-    data: {
-        pmReading: 210,
-    },
+    type: "data",
+    // source: "bf9dd9d5",
+    // local_time: new Date() * 1e6,
+    latitude: `14°39'9.08"N`,
+    longitude: `121°4'6.69"E`,
+    SI7020_TMP: 34.5,
+    SI7020_RH: 29,
 };
 // Function to send a POST request
 function sendPostRequest() {
@@ -50,7 +53,7 @@ function main() {
     console.log("Payload:", sampleData);
 
     sendPostRequest();
-    observe();
+    // observe();
 
     // setTimeout(() => {}, 2000); // Delay to separate GET and POST requests
 }

@@ -66,11 +66,11 @@ server.on("request", (req, res) => {
   } else if (url === "/" + apiBaseUrl + sensorDataEndpoint || apiBaseUrl + sensorDataEndpoint) {
     // Route: POST /sensor-data
     if (method === "POST") {
-	console.log("Processing POST request");
+      console.log("Processing POST request");
       return createSensorData(req, res);
     } else if (method === "GET") {
-    	console.log("Processing GET request");
-	return getAllSensorData(req, res);
+      console.log("Processing GET request");
+      return getAllSensorData(req, res);
     }
   }
 
