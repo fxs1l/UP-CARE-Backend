@@ -1,5 +1,4 @@
 import "tsconfig-paths/register";
-import * as coap from "coap";
 import server from "./app";
 import log from "@/utils/logging";
 

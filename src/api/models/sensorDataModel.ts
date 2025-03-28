@@ -5,6 +5,9 @@ import QueryOptions from "@/types/QueryOptions";
 import { writeApi, queryApi, Point } from "@/src/api/models/databaseModel";
 import { influxBucket } from "@/constants/influxdb";
 
+import log from "@/utils/logging";
+import { LogOrigin } from "@/types/Logger";
+
 async function writeSensorData(dataPacket: Payload) {
   const { type, source, latitude, longitude, local_time, ...sensorData } = dataPacket;
 
@@ -13,18 +16,27 @@ async function writeSensorData(dataPacket: Payload) {
       const [sensorModel, parameter] = sensorKey.split("_");
 
       const point = new Point("sensor_readings")
-        // .tag("type", type) // TODO: Verify this tag
+        .tag("type", type) // TODO: Verify this tag
         .tag("source", source)
         .tag("sensor_model", sensorModel)
         .tag("parameter", parameter)
         .floatField("value", value)
         .timestamp(local_time);
 
-      writeApi.writePoint(point);
+      try {
+        writeApi.writePoint(point);
+      } catch (error) {
+        throw new Error("Error writing sensor data: " + error);
+      }
+
     }
   });
 
-  await writeApi.flush();
+  try {
+    await writeApi.flush();
+  } catch (error) {
+    throw new Error("Error flushing data to InfluxDB: " + error);
+  }
 }
 
 async function queryData(options: QueryOptions): Promise<void> {
@@ -45,12 +57,13 @@ async function queryData(options: QueryOptions): Promise<void> {
   }
 
   try {
-    console.log("Executing Query:\n", fluxQuery);
+    log.info("Executing Query:\n" + fluxQuery, LogOrigin.INFLUXDB);
 
     const result = await queryApi.collectRows(fluxQuery);
-    console.log("Query Result:", result);
+    log.success("Query Result: \n" + result);
+    // return result;
   } catch (error) {
-    console.error("Error querying data:", error);
+    throw new Error("Error querying data: " + error);
   }
 }
 
