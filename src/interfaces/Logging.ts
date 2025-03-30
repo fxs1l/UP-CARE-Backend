@@ -1,7 +1,7 @@
 enum LogOrigin {
-  INFLUXDB = "INFLUXDB",
-  SERVER = "SERVER",
-  CAREDB = "CAREDB",
+  INFLUXDB = "INFLUX_DB",
+  SERVER = "COAP_SERVER",
+  CAREDB = "CARE_DB",
 }
 
 enum LogType {
