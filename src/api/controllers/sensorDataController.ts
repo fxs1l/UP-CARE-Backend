@@ -5,18 +5,18 @@ import { Payload } from "@/types/Payload";
 export const createSensorData = async (req: any, res: any) => {
   try {
     const body = JSON.parse(req.payload.toString()) as Payload;
-    log.info(`Sensor data received: \n${JSON.stringify(body)}`);
+    log.info("Sensor data received:", body);
 
     await localDatabase.write(body);
 
-    await careDatabase.write(body);
+    await careDatabase.write(body, true);
     res.code = "2.01";
     res.end("Data saved successfully");
 
 
   } catch (error: any) {
     res.code = "5.00";
-    log.error(`Error saving data: ${error.message}`);
+    log.error(`Error saving data: ${error.message}`, error.origin);
     res.end(error.message);
   }
 };

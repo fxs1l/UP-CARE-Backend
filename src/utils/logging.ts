@@ -1,4 +1,4 @@
-import { LogType, LogOrigin } from "@/types/Logger";
+import { LogOrigin } from "@/src/interfaces/Logging";
 
 function toManilaISOString(date: Date) {
   // Add 8 hours in milliseconds
@@ -26,20 +26,50 @@ function toManilaISOString(date: Date) {
 const resetColor = "\x1b[0m";
 
 const log = {
-  info(message: string, origin?: LogOrigin): void {
+  info(message: string, ...other: (string | object)[]): void {
+    // Extract origin if any value in ...other is of type LogOrigin
+    let origin = LogOrigin.SERVER; // Default value
+    const filteredOther = other.filter(arg => {
+      if (Object.values(LogOrigin).includes(arg as LogOrigin)) {
+        origin = arg as LogOrigin;
+        return false;
+      }
+      return true;
+    });
     const timestamp = new Date();
     const color = "\x1b[0m"; // Default color for informational
     console.log(`${toManilaISOString(timestamp)} [${origin ?? LogOrigin.SERVER}]: ${color} ${message} ${resetColor}`);
+    console.log(...filteredOther);
   },
-  error(message: string, origin?: LogOrigin): void {
+  error(message: string, ...other: any[]): void {
+    // Extract origin if any value in ...other is of type LogOrigin
+    let origin = LogOrigin.SERVER; // Default value
+    const filteredOther = other.filter(arg => {
+      if (Object.values(LogOrigin).includes(arg as LogOrigin)) {
+        origin = arg as LogOrigin;
+        return false;
+      }
+      return true;
+    });
     const timestamp = new Date();
     const color = "\x1b[31m"; // Red for errors
     console.log(`${toManilaISOString(timestamp)} [${origin ?? LogOrigin.SERVER}]: ${color} ${message} ${resetColor}`);
+    console.log(...filteredOther);
   },
-  success(message: string, origin?: LogOrigin): void {
+  success(message: string, ...other: any[]): void {
+    // Extract origin if any value in ...other is of type LogOrigin
+    let origin = LogOrigin.SERVER; // Default value
+    const filteredOther = other.filter(arg => {
+      if (Object.values(LogOrigin).includes(arg as LogOrigin)) {
+        origin = arg as LogOrigin;
+        return false;
+      }
+      return true;
+    });
     const timestamp = new Date();
     const color = "\x1b[32m"; // Green for success
     console.log(`${toManilaISOString(timestamp)} [${origin ?? LogOrigin.SERVER}]: ${color} ${message} ${resetColor}`);
+    console.log(...filteredOther);
   },
 };
 
