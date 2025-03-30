@@ -38,7 +38,7 @@ server.on("request", (req, res) => {
     // Verb: GET
     if (method === "GET") {
       log.info("Processing GET request on /api/status");
-      const currentTime = new Date().getTime() * 1e6;
+      const currentTime = new Date().getTime();
       res.end(currentTime);
     }
   }

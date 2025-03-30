@@ -24,8 +24,7 @@ const localDatabase = {
           .tag("sensor_model", sensorModel)
           .tag("parameter", parameter)
           .floatField("value", value)
-          .timestamp(local_time);
-
+          .timestamp(new Date(local_time));
         try {
           writeApi.writePoint(point);
         } catch (error) {
