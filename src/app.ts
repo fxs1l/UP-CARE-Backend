@@ -17,12 +17,10 @@ server.on("request", (req, res) => {
   if (url.startsWith(apiBaseUrl + sensorDataEndpoint)) {
     // Verb: POST
     if (method === "POST") {
-      log.info("Processing POST request on /api/sensor-data");
       return createSensorData(req, res);
     }
     // Verb: GET
     if (method === "GET") {
-      log.info("Processing GET request on /api/sensor-data");
       return getAllSensorData(req, res);
     }
     // Verb: PUT or PATCH

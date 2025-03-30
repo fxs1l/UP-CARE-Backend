@@ -1,14 +1,15 @@
-import { writeSensorData, queryData } from "@/api/models/sensorDataModel";
+import { localDatabase, careDatabase } from "@/api/models/sensorDataModel";
 import log from "@/utils/logging";
-import Payload from "@/types/Payload";
+import { Payload } from "@/types/Payload";
 
 export const createSensorData = async (req: any, res: any) => {
   try {
     const body = JSON.parse(req.payload.toString()) as Payload;
     log.info(`Sensor data received: \n${JSON.stringify(body)}`);
 
-    await writeSensorData(body);
-    log.success("Data point saved successfully!");
+    await localDatabase.write(body);
+
+    await careDatabase.write(body);
     res.code = "2.01";
     res.end("Data saved successfully");
 

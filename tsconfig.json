@@ -12,6 +12,7 @@
             "@/api/*": ["./src/api/*"],
             "@/api": ["./src/api"],
             "@/api/controllers/*": ["./src/api/controllers/*"],
+            "@/api/databases/*": ["./src/api/databases/*"],
             "@/api/middlewares/*": ["./src/api/middlewares/*"],
             "@/api/models/*": ["./src/api/models/*"],
             "@/api/routes/*": ["./src/api/routes/*"],
