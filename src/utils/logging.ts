@@ -38,8 +38,7 @@ const log = {
     });
     const timestamp = new Date();
     const color = "\x1b[0m"; // Default color for informational
-    console.log(`${toManilaISOString(timestamp)} [${origin ?? LogOrigin.SERVER}]: ${color} ${message} ${resetColor}`);
-    console.log(...filteredOther);
+    console.log(`${toManilaISOString(timestamp)} [${origin ?? LogOrigin.SERVER}]: ${color} ${message} ${resetColor}`, ...filteredOther);
   },
   error(message: string, ...other: any[]): void {
     // Extract origin if any value in ...other is of type LogOrigin
@@ -53,8 +52,7 @@ const log = {
     });
     const timestamp = new Date();
     const color = "\x1b[31m"; // Red for errors
-    console.log(`${toManilaISOString(timestamp)} [${origin ?? LogOrigin.SERVER}]: ${color} ${message} ${resetColor}`);
-    console.log(...filteredOther);
+    console.log(`${toManilaISOString(timestamp)} [${origin ?? LogOrigin.SERVER}]: ${color} ${message} `, ...filteredOther, resetColor);
   },
   success(message: string, ...other: any[]): void {
     // Extract origin if any value in ...other is of type LogOrigin
@@ -68,8 +66,7 @@ const log = {
     });
     const timestamp = new Date();
     const color = "\x1b[32m"; // Green for success
-    console.log(`${toManilaISOString(timestamp)} [${origin ?? LogOrigin.SERVER}]: ${color} ${message} ${resetColor}`);
-    console.log(...filteredOther);
+    console.log(`${toManilaISOString(timestamp)} [${origin ?? LogOrigin.SERVER}]: ${color} ${message} `, ...filteredOther, resetColor);
   },
 };
 

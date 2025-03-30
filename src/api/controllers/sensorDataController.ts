@@ -1,6 +1,7 @@
 import { localDatabase, careDatabase } from "@/api/models/sensorDataModel";
 import log from "@/utils/logging";
 import { Payload } from "@/types/Payload";
+import { LogOrigin } from "../../interfaces/Logging";
 
 export const createSensorData = async (req: any, res: any) => {
   try {
@@ -13,13 +14,20 @@ export const createSensorData = async (req: any, res: any) => {
       careDatabase.write(body),
     ]);
 
+
     // Map the results to their respective database names
-    const databaseNames = ["INFLUXDB", "CAREDB"];
+    const databaseNames = [LogOrigin.INFLUXDB, LogOrigin.CAREDB];
     const successfulDatabases = results
       .map((result, index) => (result.status === "fulfilled" ? databaseNames[index] : null))
       .filter(Boolean); // Filter out null values
 
     const successfulCount = successfulDatabases.length;
+
+    results.forEach((result, index) => {
+      if (result.status === "rejected") {
+        log.error(`Error saving data to ${databaseNames[index]}:`, result.reason.origin ?? "", result.reason.message);
+      }
+    });
 
     if (successfulCount > 0) {
       const successMessage = `Data saved successfully in ${successfulCount}/${databaseNames.length} database(s): ${successfulDatabases.join(", ")}`;
