@@ -13,7 +13,8 @@ import { AxiosError } from "axios";
 
 const localDatabase = {
   write: async (payload: Payload) => {
-    const { type, source, latitude, longitude, local_time, ...sensorData } = payload;
+    const { type, source, local_time, ...sensorData } = payload;
+    const datetime = new Date();
     Object.entries(sensorData).forEach(([sensorKey, value]) => {
       if (sensorKey !== "type") {
         const [sensorModel, parameter] = sensorKey.split("_");
@@ -24,7 +25,8 @@ const localDatabase = {
           .tag("sensor_model", sensorModel)
           .tag("parameter", parameter)
           .floatField("value", value)
-          .timestamp(new Date(parseInt(local_time)));
+        // .timestamp(new Date(parseInt(local_time)));
+        // .timestamp(datetime);
         try {
           writeApi.writePoint(point);
         } catch (error) {
@@ -76,7 +78,8 @@ const careDatabase = {
 
     // Convert local_time to format accepted by UP CARE Database
     // const date = new Date(Math.floor(parseInt(local_time) * 1e-6)); // convert to milliseconds
-    const date = new Date(payload.local_time);
+    // const date = new Date(payload.local_time);
+    const date = new Date();
     const formattedDate = date.toISOString().replace("T", " ").substring(0, 19);
     payload.local_time = formattedDate;
 
