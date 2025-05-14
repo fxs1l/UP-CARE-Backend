@@ -1,10 +1,10 @@
 import * as coap from "coap";
-import { apiBaseUrl, sensorDataEndpoint, statusEndpoint, trafficDataEndpoint } from "@/constants/url";
+import { apiBaseUrl, sensorDataEndpoint, statusEndpoint, trafficFlowEndpoint, trafficCountEndpoint } from "@/constants/url";
 import {
   createSensorData,
   getAllSensorData,
 } from "@/api/controllers/sensorDataController";
-import { createTrafficData } from "@/api/controllers/trafficDataController";
+import { createTrafficCountData, createTrafficFlowData } from "@/api/controllers/trafficDataController";
 import log from "@/utils/logging";
 
 const server = coap.createServer();
@@ -34,15 +34,35 @@ server.on("request", (req, res) => {
     }
   }
 
-  // Handle /api/traffic-data
-  if (url.startsWith(apiBaseUrl + trafficDataEndpoint)) {
+  // Handle /api/traffic/flow
+  if (url.startsWith(apiBaseUrl + trafficFlowEndpoint)) {
     // Verb: POST
     if (method === "POST") {
-      return createTrafficData(req, res);
+      return createTrafficFlowData(req, res);
     }
     // Verb: GET
     if (method === "GET") {
-      log.info("Get all traffic data not yet implemented")
+      log.info("Get all traffic data not yet implemented");
+    }
+    // Verb: PUT or PATCH
+    if (method === "PUT" || method === "PATCH") {
+      log.info("Update traffic data not yet implemented");
+    }
+    // Verb: DELETE
+    if (method === "DELETE") {
+      log.info("Delete traffic data not yet implemented");
+    }
+  }
+
+  // Handle /api/traffic/count
+  if (url.startsWith(apiBaseUrl + trafficCountEndpoint)) {
+    // Verb: POST
+    if (method === "POST") {
+      return createTrafficCountData(req, res);
+    }
+    // Verb: GET
+    if (method === "GET") {
+      log.info("Get all traffic data not yet implemented");
     }
     // Verb: PUT or PATCH
     if (method === "PUT" || method === "PATCH") {

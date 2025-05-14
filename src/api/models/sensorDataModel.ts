@@ -24,7 +24,7 @@ const localDatabase = {
           .tag("source", source)
           .tag("sensor_model", sensorModel)
           .tag("parameter", parameter)
-          .floatField("value", value)
+          .floatField("value", value);
         // .timestamp(new Date(parseInt(local_time)));
         // .timestamp(datetime);
         try {

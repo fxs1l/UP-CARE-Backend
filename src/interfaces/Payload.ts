@@ -8,10 +8,23 @@ export interface Payload {
   [key: string]: string | number;
 }
 
-export interface TrafficPayload {
+export interface TrafficCountPayload {
   source: string;
   local_time: string;
   count: TrafficCount;
+}
+
+export interface TrafficFlowPayload {
+  source: string;
+  local_time: string;
+  flow: TrafficFlow;
+}
+
+export interface TrafficFlow {
+  status: "EXITED" | "ENTERED";
+  direction: "NORTH" | "SOUTH" | "WEST" | "EAST";
+  vehicle_id: string | number;
+  vehicle_type: string;
 }
 
 export interface TrafficCount {
